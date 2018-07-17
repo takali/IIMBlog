@@ -2,9 +2,13 @@
 # Files in the packages/ subdirectory configure your dependencies.
 
 # Put parameters here that don't need to change on each machine where the app is deployed
-# https://symfony.com/doc/current/best_practices/configuration.html#application-related-configuration
 parameters:
     locale: 'en'
+    mon_parametre: '4224'
+    elasticsearch:
+      hosts:
+        {host: '%env(ES_HOST)%'}
+      index: '%env(ES_INDEX)%'
 
 services:
     # default configuration for services in *this* file
@@ -14,6 +18,8 @@ services:
         public: false       # Allows optimizing the container by removing unused services; this also means
                             # fetching services directly from the container via $container->get() won't work.
                             # The best practice is to be explicit about your dependencies anyway.
+        bind:
+          $elasticsearch_config: '%elasticsearch%'
 
     # makes classes in src/ available to be used as services
     # this creates a service per class whose id is the fully-qualified class name
@@ -28,4 +34,21 @@ services:
         tags: ['controller.service_arguments']
 
     # add more service definitions when explicit configuration is needed
-    # please note that last definitions always *replace* previous ones
+    # please note that last definitions always *replace* previous o
+
+    App\EventListener\ArticleListener:
+        tags:
+            - { name: doctrine.event_listener, event: preUpdate }
+
+
+
+
+    App\DataCollector\ElasticsearchDataCollector:
+        arguments:
+           - "@App\\Logger\\ElasticsearchLogger"
+        tags:
+           - { name: data_collector, template: 'Collector/elasticsearch.html.twig', id: 'app.elasticsearch_data_collector' }
+
+    App\Logger\ElasticsearchLogger:
+        public: false
+        arguments: ['@logger', '%kernel.debug%']
