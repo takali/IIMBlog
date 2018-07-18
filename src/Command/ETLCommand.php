@@ -10,7 +10,7 @@ use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 
-// extends ContainerAwareCommand if you need getContainer()
+// stop to use ContainerAwareCommand
 class ETLCommand extends Command
 {
     /**
@@ -61,6 +61,8 @@ class ETLCommand extends Command
         $articlesTransformed = $this->transform->transformArticles($articlesORM);
 
         $info = $this->client->bulkIndex($articlesTransformed, $input->getOption('type'));
+
+        //debug ES with $info
 
         $output->writeln('<info>end of the ETL</info>');
     }
