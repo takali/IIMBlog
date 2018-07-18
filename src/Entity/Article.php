@@ -36,6 +36,11 @@ class Article
      */
     private $longitude;
 
+    /**
+     * @ORM\ManyToOne(targetEntity="App\Entity\Category")
+     */
+    private $category;
+
     public function getId()
     {
         return $this->id;
@@ -93,6 +98,18 @@ class Article
     public function setLongitude($longitude): self
     {
         $this->longitude = $longitude;
+
+        return $this;
+    }
+
+    public function getCategory(): ?Category
+    {
+        return $this->category;
+    }
+
+    public function setCategory(?Category $category): self
+    {
+        $this->category = $category;
 
         return $this;
     }

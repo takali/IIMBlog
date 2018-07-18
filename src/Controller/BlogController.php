@@ -3,6 +3,7 @@ namespace App\Controller;
 
 use App\Entity\Article;
 use App\ETL\Client;
+use App\Form\ArticleType;
 use App\Model\Mailer;
 use App\Repository\ArticleRepository;
 use Doctrine\ORM\EntityManagerInterface;
@@ -97,19 +98,30 @@ class BlogController extends AbstractController
     }
 
     /**
-     * @Route("/article/add", name="front_article", requirements={"id": "\d+"})
+     * @Route("/article/add", name="front_article_add")
      */
-    public function articleCreate()
+    public function articleCreate(Request $request)
     {
         $article = new Article();
-        $article->setTitle('toto');
-        $article->setContent('toto');
-        $article->setLatitude(47);
-        $article->setLongitude(47);
 
-        $this->entityManager->persist($article);
-        $this->entityManager->flush();
+        $form = $this->createForm(ArticleType::class, $article);
 
-        return new Response('success');
+        $form->handleRequest($request);
+
+        if ($form->isSubmitted() && $form->isValid()) {
+
+
+            // $entityManager = $this->getDoctrine()->getManager();
+            // $entityManager->persist($article);
+            // $entityManager->flush();
+
+            //add a success FlashBag
+
+            return $this->redirectToRoute('article_list');
+        }
+
+        return $this->render('article/create.html.twig', array(
+            'form' => $form->createView(),
+        ));
     }
 }
