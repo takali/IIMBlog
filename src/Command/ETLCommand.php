@@ -53,16 +53,63 @@ class ETLCommand extends Command
         ;
     }
 
+    protected function getMapping(string $index, string $type) :array
+    {
+        // if you are multi language use : https://www.elastic.co/guide/en/elasticsearch/guide/current/mixed-lang-fields.html
+
+        return [
+            'index' => $index,
+            'type' => $type,
+            'body' => [
+                $type => [
+                    '_source' => [
+                        'enabled' => true
+                    ],
+                    'properties' => [
+                        'location' => [
+                            'type' => 'geo_point'
+                        ],
+                        'title' => [
+                            'type' => 'text',
+                            'analyzer' => 'french'
+                        ],
+                        'content' => [
+                            'type' => 'text',
+                            'analyzer' => 'french'
+                        ],
+                    ]
+                ]
+            ]
+        ];
+    }
+
     protected function execute(InputInterface $input, OutputInterface $output)
     {
-        //that equivalent to the Load layer, make a Class if it become more complex
+        $type = $input->getOption('type');
+        $index = $this->client->getIndex();
+
+        //check if index exists
+        if (false === $this->client->indices()->exists(['index' => $index])) {
+            //if not, create it
+            $this->client->indices()->create([
+                'index' => $index
+            ]);
+        }
+
+        //update mapping
+        $this->client->indices()->putMapping($this->getMapping($index, $type));
+
+
+        //Extract : make a Class Model if it become more complex
         $articlesORM = $this->entityManager->getRepository(Article::class)->findAll();
 
+        //Transform
         $articlesTransformed = $this->transform->transformArticles($articlesORM);
 
-        $info = $this->client->bulkIndex($articlesTransformed, $input->getOption('type'));
+        //Load
+        $response = $this->client->bulkIndex($articlesTransformed, $type);
 
-        //debug ES with $info
+        //debug ES with $response if needed
 
         $output->writeln('<info>end of the ETL</info>');
     }

@@ -136,4 +136,21 @@ class Client
             ]
         );
     }
+
+    /**
+     * @param $params
+     * @return array|bool
+     */
+    public function exists($params)
+    {
+        return $this->client->exists($params);
+    }
+
+    /**
+     * @return \Elasticsearch\Namespaces\IndicesNamespace
+     */
+    public function indices()
+    {
+        return $this->client->indices();
+    }
 }

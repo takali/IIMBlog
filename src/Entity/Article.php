@@ -26,6 +26,16 @@ class Article
      */
     private $content;
 
+    /**
+     * @ORM\Column(type="decimal", precision=11, scale=8, nullable=true)
+     */
+    private $latitude;
+
+    /**
+     * @ORM\Column(type="decimal", precision=11, scale=8, nullable=true)
+     */
+    private $longitude;
+
     public function getId()
     {
         return $this->id;
@@ -59,6 +69,30 @@ class Article
     public function setContent(string $content): self
     {
         $this->content = $content;
+
+        return $this;
+    }
+
+    public function getLatitude()
+    {
+        return $this->latitude;
+    }
+
+    public function setLatitude($latitude): self
+    {
+        $this->latitude = $latitude;
+
+        return $this;
+    }
+
+    public function getLongitude()
+    {
+        return $this->longitude;
+    }
+
+    public function setLongitude($longitude): self
+    {
+        $this->longitude = $longitude;
 
         return $this;
     }

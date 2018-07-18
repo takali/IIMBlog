@@ -20,6 +20,10 @@ class Transform
             'id' => $article->getId(),
             'title' => $article->getTitle(),
             'content' => $article->getContent(),
+            'location' => [
+                'lat' => $article->getLatitude(),
+                'lon' => $article->getLongitude(),
+            ],
         ];
     }
 }
