@@ -1,8 +1,6 @@
 <?php
 namespace App\Model;
 
-
-
 class Newsletter
 {
     protected $mailer;
@@ -20,6 +18,4 @@ class Newsletter
     {
         $this->mailer = $mailer;
     }
-
-
 }

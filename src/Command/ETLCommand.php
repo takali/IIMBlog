@@ -1,9 +1,13 @@
 <?php
 namespace App\Command;
 
+use App\Entity\Article;
 use App\ETL\Client;
+use App\ETL\Transform;
+use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
+use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 
 // extends ContainerAwareCommand if you need getContainer()
@@ -15,14 +19,27 @@ class ETLCommand extends Command
     protected $client;
 
     /**
+     * @var EntityManagerInterface
+     */
+    protected $entityManager;
+
+    /**
+     * @var Transform
+     */
+    protected $transform;
+
+
+    /**
      * ETLCommand constructor.
      * @param Client $client
      */
-    public function __construct(Client $client)
+    public function __construct(Client $client, EntityManagerInterface $entityManager, Transform $transform)
     {
         parent::__construct();
 
         $this->client = $client;
+        $this->entityManager = $entityManager;
+        $this->transform = $transform;
     }
 
 
@@ -31,15 +48,20 @@ class ETLCommand extends Command
         $this
             ->setName('app:etl')
             ->setDescription('ETL for populate Elasticsearch from SQL')
+            ->addOption('type', null, InputOption::VALUE_REQUIRED, 'type to populate');
 
         ;
     }
 
     protected function execute(InputInterface $input, OutputInterface $output)
     {
+        //that equivalent to the Load layer, make a Class if it become more complex
+        $articlesORM = $this->entityManager->getRepository(Article::class)->findAll();
 
-        // write the ETL here
+        $articlesTransformed = $this->transform->transformArticles($articlesORM);
 
-        //$output->writeln();
+        $info = $this->client->bulkIndex($articlesTransformed, $input->getOption('type'));
+
+        $output->writeln('<info>end of the ETL</info>');
     }
 }

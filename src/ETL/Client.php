@@ -19,6 +19,7 @@ class Client
      */
     private $index;
 
+
     /**
      * Client constructor.
      * @param array $elasticsearch_config
@@ -46,10 +47,11 @@ class Client
      * @param $params
      * @return array
      */
-    public function index($params): array
+    public function index(array $params): array
     {
         $data = $this->client->index($params);
         $this->logRequestInfo();
+
         return $data;
     }
 
@@ -57,10 +59,11 @@ class Client
      * @param $params
      * @return array
      */
-    public function delete($params): array
+    public function delete(array $params): array
     {
         $data = $this->client->delete($params);
         $this->logRequestInfo();
+
         return $data;
     }
 
@@ -68,21 +71,51 @@ class Client
      * @param $params
      * @return array
      */
-    public function bulk($params): array
+    public function bulk(array $params): array
     {
         $data = $this->client->bulk($params);
         $this->logRequestInfo();
+
         return $data;
     }
+
+    /**
+     * @param array $params
+     * @param string $type
+     * @return array
+     */
+    public function bulkIndex(array $params, string $type): array
+    {
+        $paramsIndex = [];
+
+        foreach ($params as $param) {
+            $paramsIndex['body'][] = [
+                'index' => [
+                    '_index' => $this->index,
+                    '_type' => $type,
+                    '_id' => $param['id'],
+                ]
+            ];
+
+            unset($param['id']);
+            $paramsIndex['body'][] = $param;
+        }
+
+        $data = $this->bulk($paramsIndex);
+
+        return $data;
+    }
+
 
     /**
      * @param $params
      * @return array
      */
-    public function search($params)
+    public function search(array $params): array
     {
         $data = $this->client->search($params);
         $this->logRequestInfo();
+
         return $data;
     }
 

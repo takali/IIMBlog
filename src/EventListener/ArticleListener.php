@@ -18,18 +18,3 @@ class ArticleListener
         $entity->setUpdatedAt(new \DateTime());
     }
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
