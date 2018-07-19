@@ -120,7 +120,7 @@ class BlogController extends AbstractController
             return $this->redirectToRoute('article_list');
         }
 
-        return $this->render('article/create.html.twig', array(
+        return $this->render('blog/create.html.twig', array(
             'form' => $form->createView(),
         ));
     }
