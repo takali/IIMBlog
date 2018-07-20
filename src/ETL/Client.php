@@ -118,6 +118,19 @@ class Client
 
         return $data;
     }
+        
+
+    /**
+     * @param $params
+     * @return array
+     */
+    public function suggest(array $params): array
+    {
+        $data = $this->client->suggest($params);
+        $this->logRequestInfo();
+
+        return $data;
+    }
 
     private function logRequestInfo()
     {
