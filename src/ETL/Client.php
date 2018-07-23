@@ -47,9 +47,11 @@ class Client
      * @param $params
      * @return array
      */
-    public function index(array $params): array
+    public function index(array $params, string $type): array
     {
-        $data = $this->client->index($params);
+        $paramsIndex = $this->prepareForIndex($params, $type);
+
+        $data = $this->client->index($paramsIndex);
         $this->logRequestInfo();
 
         return $data;
@@ -68,30 +70,28 @@ class Client
     }
 
     /**
-     * @param $params
+     * @param array $params
+     * @param string $type
      * @return array
      */
-    public function bulk(array $params): array
+    public function bulk(array $params, string $index, string $type): array
     {
-        $data = $this->client->bulk($params);
+        $paramsIndex = $this->prepareForBulkIndex($params, $index, $type);
+
+        $data = $this->client->bulk($paramsIndex);
         $this->logRequestInfo();
 
         return $data;
     }
 
-    /**
-     * @param array $params
-     * @param string $type
-     * @return array
-     */
-    public function bulkIndex(array $params, string $type): array
+    public function prepareForBulkIndex(array $params, string $index, string $type): array
     {
         $paramsIndex = [];
 
         foreach ($params as $param) {
             $paramsIndex['body'][] = [
                 'index' => [
-                    '_index' => $this->index,
+                    '_index' => $index,
                     '_type' => $type,
                     '_id' => $param['id'],
                 ]
@@ -101,9 +101,21 @@ class Client
             $paramsIndex['body'][] = $param;
         }
 
-        $data = $this->bulk($paramsIndex);
+        return $paramsIndex;
+    }
 
-        return $data;
+    public function prepareForIndex(array $param, string $type): array
+    {
+        $paramIndex= [
+            'index' => $this->index,
+            'type' => $type,
+            'id' => $param['id'],
+        ];
+
+        unset($param['id']);
+        $paramIndex['body'] = $param;
+
+        return $paramIndex;
     }
 
 

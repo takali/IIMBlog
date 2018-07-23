@@ -14,6 +14,8 @@ class ArticleType extends AbstractType
         $builder
             ->add('title')
             ->add('content')
+            ->add('latitude')
+            ->add('longitude')
             ->add('save', SubmitType::class, [
                 'label' => 'Create Article'
             ])
@@ -27,6 +29,3 @@ class ArticleType extends AbstractType
         ]);
     }
 }
-
-
-

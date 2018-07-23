@@ -109,15 +109,13 @@ class BlogController extends AbstractController
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
+            $entityManager = $this->getDoctrine()->getManager();
+            $entityManager->persist($article);
+            $entityManager->flush();
 
+            //add a success FlashBag here
 
-            // $entityManager = $this->getDoctrine()->getManager();
-            // $entityManager->persist($article);
-            // $entityManager->flush();
-
-            //add a success FlashBag
-
-            return $this->redirectToRoute('article_list');
+            return $this->redirectToRoute('article_list'); //create the action article_list
         }
 
         return $this->render('blog/create.html.twig', array(

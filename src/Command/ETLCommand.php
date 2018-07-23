@@ -83,22 +83,56 @@ class ETLCommand extends Command
         ];
     }
 
+    protected function invertAliase(string $index, string $aliase)
+    {
+        $this->client->indices()->updateAliases([
+            'body'=> [
+                'actions' => [
+                    [
+                        'remove' => [
+                            'index' => '*',
+                            'alias' => $aliase
+                        ]
+                    ],
+                    [
+                        'add' => [
+                            'index' => $index,
+                            'alias' => $aliase
+                        ]
+                    ]
+                ]
+            ]
+        ]);
+    }
+
+    protected function deleteUnusedIndices(string $index, string $aliase)
+    {
+        $response = $this->client->indices()->getMapping();
+        $indices = array_keys($response);
+
+        foreach ($indices as $key => $existingIndex) {
+            //only if it's not the current index and not a 3rd party index
+            if ($existingIndex !== $index && 0 === strpos($existingIndex, $aliase)) {
+                $this->client->indices()->delete([
+                    'index' => $existingIndex
+                ]);
+            }
+        }
+    }
+
     protected function execute(InputInterface $input, OutputInterface $output)
     {
         $type = $input->getOption('type');
-        $index = $this->client->getIndex();
+        $aliase = $this->client->getIndex();
+        $index = $aliase.'_'.(new \DateTime())->format('U');
 
-        //check if index exists
-        if (false === $this->client->indices()->exists(['index' => $index])) {
-            //if not, create it
-            $this->client->indices()->create([
-                'index' => $index
-            ]);
-        }
+        //create Index
+        $this->client->indices()->create([
+            'index' => $index
+        ]);
 
         //update mapping
         $this->client->indices()->putMapping($this->getMapping($index, $type));
-
 
         //Extract : make a Class Model if it become more complex
         $articlesORM = $this->entityManager->getRepository(Article::class)->findAll();
@@ -107,9 +141,13 @@ class ETLCommand extends Command
         $articlesTransformed = $this->transform->transformArticles($articlesORM);
 
         //Load
-        $response = $this->client->bulkIndex($articlesTransformed, $type);
+        $this->client->bulk($articlesTransformed, $index, $type);
 
-        //debug ES with $response if needed
+        //invert aliase
+        $this->invertAliase($index, $aliase);
+
+        //delete unused indices
+        $this->deleteUnusedIndices($index, $aliase);
 
         $output->writeln('<info>end of the ETL</info>');
     }

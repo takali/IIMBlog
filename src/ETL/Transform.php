@@ -14,7 +14,7 @@ class Transform
         ], $articles);
     }
 
-    protected function transformArticle(Article $article) : array
+    public function transformArticle(Article $article) : array
     {
         return [
             'id' => $article->getId(),
