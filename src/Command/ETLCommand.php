@@ -1,20 +1,14 @@
 <?php
 namespace App\Command;
 
-use App\Model\ClientElasticSearch;
 use App\Model\ETL\ETLArticle;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 
-// stop to use ContainerAwareCommand
 class ETLCommand extends Command
 {
-    /**
-     * @var Client
-     */
-    protected $client;
 
     /**
      * @var ETLArticle
@@ -24,13 +18,12 @@ class ETLCommand extends Command
 
     /**
      * ETLCommand constructor.
-     * @param Client $client
+     * @param ETLArticle $etl_article
      */
-    public function __construct(ClientElasticSearch $client, ETLArticle $etl_article)
+    public function __construct(ETLArticle $etl_article)
     {
         parent::__construct();
 
-        $this->client = $client;
         $this->etl_article = $etl_article;
     }
 

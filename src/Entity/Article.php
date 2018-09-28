@@ -2,6 +2,7 @@
 
 namespace App\Entity;
 
+use Doctrine\Common\Persistence\ManagerRegistry;
 use Doctrine\ORM\Mapping as ORM;
 
 /**

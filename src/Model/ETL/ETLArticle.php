@@ -3,7 +3,7 @@ namespace App\Model\ETL;
 
 use App\Entity\Article;
 use App\Model\ClientElasticSearch;
-use Doctrine\ORM\EntityManagerInterface;
+use App\Repository\ArticleRepository;
 
 class ETLArticle extends AbstractETL
 {
@@ -13,9 +13,9 @@ class ETLArticle extends AbstractETL
     protected $client;
 
     /**
-     * @var EntityManagerInterface
+     * @var ArticleRepository
      */
-    protected $entityManager;
+    protected $articleRepository;
 
     /**
      * @var Transform
@@ -26,10 +26,10 @@ class ETLArticle extends AbstractETL
      * ETLCommand constructor.
      * @param ClientElasticSearch $client
      */
-    public function __construct(ClientElasticSearch $client, EntityManagerInterface $entityManager, Transform $transform)
+    public function __construct(ClientElasticSearch $client, ArticleRepository $articleRepository, Transform $transform)
     {
         $this->client = $client;
-        $this->entityManager = $entityManager;
+        $this->articleRepository = $articleRepository;
         $this->transform = $transform;
     }
 
@@ -47,7 +47,7 @@ class ETLArticle extends AbstractETL
         $this->client->indices()->putMapping($this->getMapping($index, $type));
 
         //Extract : make a Class Model if it become more complex
-        $articlesORM = $this->entityManager->getRepository(Article::class)->findAll();
+        $articlesORM = $this->articleRepository->findAll();
 
         //Transform
         $articlesTransformed = $this->transform->transformArticles($articlesORM);

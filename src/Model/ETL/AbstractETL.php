@@ -1,10 +1,7 @@
 <?php
 namespace App\Model\ETL;
 
-use App\Entity\Article;
-use App\ETL\Client;
-use App\ETL\Transform;
-use Doctrine\ORM\EntityManagerInterface;
+use App\Model\ETL\Client;
 
 abstract class AbstractETL
 {

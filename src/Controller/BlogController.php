@@ -5,7 +5,6 @@ use App\Entity\Article;
 use App\Model\ClientElasticSearch;
 use App\Form\ArticleType;
 use App\Model\Mailer;
-use App\Repository\ArticleRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -24,15 +23,10 @@ class BlogController extends AbstractController
      */
     protected $client;
 
-    /**
-     * @var EntityManagerInterface
-     */
-    protected $entityManager;
 
-    public function __construct(ClientElasticSearch $client, EntityManagerInterface $entityManager)
+    public function __construct(ClientElasticSearch $client)
     {
         $this->client = $client;
-        $this->entityManager = $entityManager;
     }
 
     /**
