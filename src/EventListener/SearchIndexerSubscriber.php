@@ -4,20 +4,16 @@ namespace App\EventListener;
 use App\Entity\Article;
 use App\ETL\Client;
 use App\ETL\Transform;
+use App\Model\ETLArticle;
 use Doctrine\Common\EventSubscriber;
 use Doctrine\Common\Persistence\Event\LifecycleEventArgs;
 
 class SearchIndexerSubscriber implements EventSubscriber
 {
     /**
-     * @var Transform
+     * @var ETLArticle
      */
-    protected $transform;
-
-    /**
-     * @var Client
-     */
-    protected $client;
+    protected $etl_article;
 
     /**
      * @var string
@@ -25,10 +21,9 @@ class SearchIndexerSubscriber implements EventSubscriber
     protected $type = 'article';
 
 
-    public function __construct(Transform $transform, Client $client)
+    public function __construct(ETLArticle $etl_article)
     {
-        $this->transform = $transform;
-        $this->client = $client;
+        $this->etl_article = $etl_article;
     }
 
     public function getSubscribedEvents()
@@ -54,9 +49,7 @@ class SearchIndexerSubscriber implements EventSubscriber
         $entity = $args->getObject();
 
         if ($entity instanceof Article) {
-            $articleTransformed = $this->transform->transformArticle($entity);
-
-            $this->client->index($articleTransformed, $this->type);
+            $this->etl_article->indexOne($entity);
         }
     }
 }
