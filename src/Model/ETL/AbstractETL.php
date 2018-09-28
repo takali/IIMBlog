@@ -1,5 +1,5 @@
 <?php
-namespace App\Model;
+namespace App\Model\ETL;
 
 use App\Entity\Article;
 use App\ETL\Client;

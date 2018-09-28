@@ -2,9 +2,7 @@
 namespace App\EventListener;
 
 use App\Entity\Article;
-use App\ETL\Client;
-use App\ETL\Transform;
-use App\Model\ETLArticle;
+use App\Model\ETL\ETLArticle;
 use Doctrine\Common\EventSubscriber;
 use Doctrine\Common\Persistence\Event\LifecycleEventArgs;
 

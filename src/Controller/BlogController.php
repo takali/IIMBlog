@@ -2,7 +2,7 @@
 namespace App\Controller;
 
 use App\Entity\Article;
-use App\ETL\Client;
+use App\Model\ClientElasticSearch;
 use App\Form\ArticleType;
 use App\Model\Mailer;
 use App\Repository\ArticleRepository;
@@ -20,7 +20,7 @@ use App\Model\Newsletter;
 class BlogController extends AbstractController
 {
     /**
-     * @var Client
+     * @var ClientElasticSearch
      */
     protected $client;
 
@@ -29,7 +29,7 @@ class BlogController extends AbstractController
      */
     protected $entityManager;
 
-    public function __construct(Client $client, EntityManagerInterface $entityManager)
+    public function __construct(ClientElasticSearch $client, EntityManagerInterface $entityManager)
     {
         $this->client = $client;
         $this->entityManager = $entityManager;

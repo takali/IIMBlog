@@ -1,5 +1,5 @@
 <?php
-namespace App\ETL;
+namespace App\Model\ETL;
 
 use App\Entity\Article;
 use App\Logger\ElasticsearchLogger;

@@ -1,15 +1,14 @@
 <?php
-namespace App\Model;
+namespace App\Model\ETL;
 
 use App\Entity\Article;
-use App\ETL\Client;
-use App\ETL\Transform;
+use App\Model\ClientElasticSearch;
 use Doctrine\ORM\EntityManagerInterface;
 
 class ETLArticle extends AbstractETL
 {
     /**
-     * @var Client
+     * @var ClientElasticSearch
      */
     protected $client;
 
@@ -25,9 +24,9 @@ class ETLArticle extends AbstractETL
 
     /**
      * ETLCommand constructor.
-     * @param Client $client
+     * @param ClientElasticSearch $client
      */
-    public function __construct(Client $client, EntityManagerInterface $entityManager, Transform $transform)
+    public function __construct(ClientElasticSearch $client, EntityManagerInterface $entityManager, Transform $transform)
     {
         $this->client = $client;
         $this->entityManager = $entityManager;

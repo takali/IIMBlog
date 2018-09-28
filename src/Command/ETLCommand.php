@@ -1,8 +1,8 @@
 <?php
 namespace App\Command;
 
-use App\ETL\Client;
-use App\Model\ETLArticle;
+use App\Model\ClientElasticSearch;
+use App\Model\ETL\ETLArticle;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
@@ -26,7 +26,7 @@ class ETLCommand extends Command
      * ETLCommand constructor.
      * @param Client $client
      */
-    public function __construct(Client $client, ETLArticle $etl_article)
+    public function __construct(ClientElasticSearch $client, ETLArticle $etl_article)
     {
         parent::__construct();
 

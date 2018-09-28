@@ -1,10 +1,10 @@
 <?php
-namespace App\ETL;
+namespace App\Model;
 
 use App\Logger\ElasticsearchLogger;
 use Elasticsearch\ClientBuilder;
 
-class Client
+class ClientElasticSearch
 {
     /**
      * @var \Elasticsearch\Client
@@ -139,6 +139,17 @@ class Client
     public function suggest(array $params): array
     {
         $data = $this->client->suggest($params);
+        $this->logRequestInfo();
+
+        return $data;
+    }
+
+    /**
+     * @return \Elasticsearch\Namespaces\ClusterNamespace
+     */
+    public function cluster()
+    {
+        $data = $this->client->cluster();
         $this->logRequestInfo();
 
         return $data;
